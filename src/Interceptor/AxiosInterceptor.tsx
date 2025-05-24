@@ -3,8 +3,7 @@ import { removeUser } from "../Slices/UserSlice";
 import { removeJwt } from "../Slices/JwtSlice";
 
 const axiosInstance = axios.create({
-    // baseURL: 'http://localhost:8080'
-    baseURL: 'https://jobportal-backend-zwsk.onrender.com'
+    baseURL: process.env.REACT_APP_API_BASE_URL || "http://localhost:8080"
 });
 
 axiosInstance.interceptors.request.use(
@@ -18,7 +17,7 @@ axiosInstance.interceptors.request.use(
     (error) => {
         return Promise.reject(error);
     }
-)
+);
 
 export const setupResponseInterceptor = (navigate: any, dispatch: any) => {
     axiosInstance.interceptors.response.use(
@@ -27,14 +26,13 @@ export const setupResponseInterceptor = (navigate: any, dispatch: any) => {
         },
         (error) => {
             if (error.response?.status === 401) {
-
                 dispatch(removeUser());
                 dispatch(removeJwt());
                 navigate('/login');
             }
             return Promise.reject(error);
         }
-    )
-}
+    );
+};
 
 export default axiosInstance;
